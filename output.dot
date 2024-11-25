@@ -1,0 +1,4 @@
+digraph G {
+    node [shape=box, fontsize=10];
+    "401badcf07ac84accb7f97af9dc244958329e99e" [label="401badcf07ac84accb7f97af9dc244958329e99e\n.gitignore\n__pycache__/git_dependency_visualizer.cpython-312.pyc\ngit_dependency_visualizer.py\nreadme.md\nresult.ext\ntarget_file.txt\ntest_git_dependency_visualizer.py"];
+}
