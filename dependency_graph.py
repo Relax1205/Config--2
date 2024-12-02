@@ -1,9 +1,7 @@
 import os
 import json
-import struct
 import zlib
 from datetime import datetime, timezone
-import subprocess
 import graphviz  # Используем библиотеку Graphviz
 
 # Путь к конфигурационному файлу по умолчанию
@@ -51,16 +49,10 @@ def parse_commit_data(data, commit_hash):
     for line in lines:
         if line.startswith('parent'):
             commit_data['parent'] = line.split()[1]
-        elif line.startswith('author'):
-            commit_data['author'] = line.split()[1]
         elif line.startswith('committer'):
             # Разбираем строку коммиттера и извлекаем время
             committer_parts = line.split()
-            commit_data['committer'] = committer_parts[1]  # Имя
-            commit_data['committer_email'] = committer_parts[2]  # Электронная почта
             commit_data['committer_timestamp'] = int(committer_parts[-2])  # Временная метка
-        elif line.startswith('tree'):
-            commit_data['tree'] = line.split()[1]
     
     return commit_data
 
@@ -97,7 +89,7 @@ def get_commits_after_date(repo_path, start_date):
         if not current_commit_hash:
             break
     
-    # Сортируем коммиты по времени
+    # Сортируем коммиты по временной метке
     commits.sort(key=lambda x: x['committer_timestamp'])
     
     return commits
@@ -113,14 +105,18 @@ def generate_graph(commits):
     """Генерация графа в формате Graphviz (DOT)."""
     graph = graphviz.Digraph(format='png', engine='dot')
     
-    for commit in commits:
+    # Нумерация коммитов
+    for idx, commit in enumerate(commits, 1):
         commit_hash = commit['commit_hash']
-        # Отображаем только хеш коммита
-        graph.node(commit_hash, label=f"{commit_hash[:7]}")  # Только хеш коммита
+        # Используем номер коммита, а не хеш
+        graph.node(str(idx), label=f"Commit {idx}\n{commit_hash[:7]}")  # Отображаем номер и первые 7 символов хеша
         
         parent_hash = commit.get('parent')
         if parent_hash:
-            graph.edge(parent_hash, commit_hash)
+            # Номер родительского коммита
+            parent_idx = next((i for i, c in enumerate(commits, 1) if c['commit_hash'] == parent_hash), None)
+            if parent_idx:
+                graph.edge(str(parent_idx), str(idx))
     
     return graph
 

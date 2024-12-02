@@ -1,3 +1,7 @@
 digraph {
-	"778f56001bfc6b4db47f2bceb7794060a87c4465" [label="778f560"]
+	1 [label="Commit 1
+778f560"]
+	2 [label="Commit 2
+64acb0c"]
+	1 -> 2
 }
