@@ -4,4 +4,7 @@ digraph {
 	2 [label="Commit 2
 64acb0c"]
 	1 -> 2
+	3 [label="Commit 3
+db25305"]
+	2 -> 3
 }
